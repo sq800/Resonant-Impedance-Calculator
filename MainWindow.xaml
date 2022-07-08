@@ -33,7 +33,7 @@
         <Label Content="XC=1/(2πFC)" HorizontalAlignment="Left" Margin="325,168,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.346,1.06" FontSize="14"/>
         <TextBox Name="XC" HorizontalAlignment="Left" Margin="312,198,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="16"/>
         <TextBlock HorizontalAlignment="Left" Margin="461,121,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="126" Width="120" FontSize="16" FontWeight="Bold" FontFamily="Consolas"><Run Text="1p"/><Run Language="zh-cn" Text=" "/><Run Text="="/><Run Language="zh-cn" Text=" "/><Run Text="10^-12"/><LineBreak/><Run Text="1n ="/><Run Language="zh-cn" Text=" "/><Run Text="10^-9"/><LineBreak/><Run Text="1u ="/><Run Language="zh-cn" Text=" "/><Run Text="10^-6"/><LineBreak/><Run Text="1m ="/><Run Language="zh-cn" Text=" "/><Run Text="10^-3"/><LineBreak/><Run Text="1k ="/><Run Language="zh-cn" Text=" "/><Run Text="10^3"/><LineBreak/><Run Text="1M ="/><Run Language="zh-cn" Text=" "/><Run Text="10^6"/></TextBlock>
-        <TextBlock HorizontalAlignment="Left" Margin="23,265,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="498" Height="71"><Run Text="使用说明："/><LineBreak/><Run Text="输入支持符号，格式为：数字加符号，如1k  2.2M"/><Run Language="zh-cn" Text="，支持的符号有p,n,u,m,k,M"/><LineBreak/><Run/><LineBreak/><Run Text="输出大于1，个位以上正常显示，保留三位"/><Run Text="小数，小于1则采用科学计数法，保留三位小数"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="23,265,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="498" Height="71"><Run Text="使用说明："/><LineBreak/><Run Text="输入支持符号，格式为：数字加符号，如1k  2.2M"/><Run Text="，支持的符号有p,n,u,m,k,M"/><LineBreak/></TextBlock>
 
     </Grid>
 </Window>

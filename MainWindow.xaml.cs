@@ -22,11 +22,114 @@ namespace 谐振阻抗计算器
     {
         private double f1, lc1, l1, c1, f2, l2, xl, f3, c3, xc;
 
-        
-
         public MainWindow()
         {
             InitializeComponent();
+        }
+        /*******************************************************************************
+        ** @name      函数名  : HandleNumber
+        ** @brief     功能    : 为大于等于1的数保留不超过3位小数位
+        ** @param     参数    : double	无
+        ** @return    返回    : string	无
+        ** @author    作者    : ysq
+        ** @date      创建日期: 2022/7/8
+        ** ----------------------------------------------------------------------------
+        ** @change by 修改者  :
+        ** @date      修改日期:
+        ** @brier     修改内容:
+        *******************************************************************************/
+        private string HandleNumber(double dou)
+        {
+            string str = dou.ToString();
+            if (str.Contains('.'))
+            {
+                string a = str.Split('.')[0];
+                string b = str.Split('.')[1];
+                //若超过3位则只保留3位
+                if (b.Length >= 3)
+                {
+                    b = b.Substring(0, 3);
+
+                }
+                //若不超过3位则直接拼接
+                a = a + '.' + b;
+                return a;
+            }
+            return str;
+        }
+
+        /*******************************************************************************
+        ** @name      函数名  : HandleDecimal
+        ** @brief     功能    : 小数的处理方法
+        ** @param     参数    : double dou	
+        ** @return    返回    : string	
+        ** @author    作者    : ysq
+        ** @date      创建日期: 2022/7/8
+        ** ----------------------------------------------------------------------------
+        ** @change by 修改者  :
+        ** @date      修改日期:
+        ** @brier     修改内容:
+        *******************************************************************************/
+        private string HandleDecimal(double dou)
+        {
+            string str = dou.ToString();
+            int index = str.IndexOf('.');
+            // subStr为小数点后的数字
+            string subStr = str.Substring(index + 1, str.Length - 1 - index);
+            char[] chars = subStr.ToCharArray();
+            //MessageBox.Show(new String(chars));
+            int start = 0;
+            char[] result = new char[20];
+            //MessageBox.Show(new String(chars));
+            // 循环查询小数点后的0，跳到有值的位置，如0.004，跳到4
+            for (int i = 1; i < chars.Length; i++)
+            {
+                if (chars[start] != '0')
+                {
+                    break;
+                }
+                else
+                {
+                    if (chars[start] != chars[i])
+                    {
+                        start = i;
+                        break;
+                    }
+                }
+            }
+            result[0] = chars[start];
+            result[1] = '.';
+            result[2] = chars[start + 1];
+            result[3] = chars[start + 2];
+            result[4] = chars[start + 3];
+            result[5] = 'E';
+            result[6] = '-';
+            string n = Convert.ToString(start + 1);
+            string resultStr = (new string(result)) + '0' + n;
+            return resultStr;
+        }
+
+        /*******************************************************************************
+        ** @name      函数名  : HandleScientific
+        ** @brief     功能    : 科学计数法只保留三位小数
+        ** @param     参数    : double dou	无
+        ** @return    返回    : private string	无
+        ** @author    作者    : ysq
+        ** @date      创建日期: 2022/7/8
+        ** ----------------------------------------------------------------------------
+        ** @change by 修改者  :
+        ** @date      修改日期:
+        ** @brier     修改内容:
+        *******************************************************************************/
+        private string HandleScientific(double dou)
+        {
+            string str = dou.ToString();
+            string start = str.Substring(0, 5);
+            int e = str.LastIndexOf('E');
+            //MessageBox.Show(e.ToString());
+            string end = str.Substring(e);
+            string resultStr = start + end;
+            return resultStr;
         }
 
         private double StrToDou(string str)
@@ -101,65 +204,86 @@ namespace 谐振阻抗计算器
             }
             else if (dou >= 1)
             {
-                string str = dou.ToString();
-                if (str.Contains('.'))
-                {
-                    string a = str.Split('.')[0];
-                    string b = str.Split('.')[1];
-                    b = b.Substring(0,3);
-                    a = a + '.' + b;
-                    return a;
-                }
-                return str;
+                //大于等于1的数的处理方法
+                return HandleNumber(dou);
             }
             else if (dou >= 1e-4)
             {
-                string str = dou.ToString();
-                int index = str.IndexOf('.');
-                // subStr为小数点后的数字
-                string subStr = str.Substring(index + 1, str.Length - 1 - index);
-                char[] chars = subStr.ToCharArray();
-                //MessageBox.Show(new String(chars));
-                int start = 0;
-                char[] result = new char[10];
-                //MessageBox.Show(new String(chars));
-                // 循环查询小数点后的0，跳到有值的位置，如0.004，跳到4
-                for (int i = 1; i < chars.Length; i++)
-                {
-                    if (chars[start] != '0')
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        if (chars[start] != chars[i])
-                        {
-                            start = i;
-                            break;
-                        }
-                    }
-                }
-                result[0] = chars[start];
-                result[1] = '.';
-                result[2] = chars[start + 1];
-                result[3] = chars[start + 2];
-                result[4] = chars[start + 3];
-                result[5] = 'E';
-                result[6] = '-';
-                string n = Convert.ToString(start + 1);
-
-                string resultStr = (new string(result)) + n;
-                return resultStr;
+                //小数的处理方法
+                return HandleDecimal(dou);
             }
             else  // 小于0.0001会自动转为科学计数法，需要特殊处理
             {
-                string str = dou.ToString();
-                string start = str.Substring(0, 5);
-                int e = str.LastIndexOf('E');
-                //MessageBox.Show(e.ToString());
-                string end = str.Substring(e);
-                string resultStr = start + end;
-                return resultStr;
+                return HandleScientific(dou);
+            }
+        }
+
+        /*******************************************************************************
+        ** @name      函数名  : DouToSign
+        ** @brief     功能    : 数字转为数字+量级符号，支持p,n,u,m,k,M
+        ** @param     参数    : double dou	无
+        ** @return    返回    : private string	无
+        ** @author    作者    : ysq
+        ** @date      创建日期: 2022/7/8
+        ** ----------------------------------------------------------------------------
+        ** @change by 修改者  :
+        ** @date      修改日期:
+        ** @brier     修改内容:
+        *******************************************************************************/
+        private string DouToSign(double dou)
+        {
+            string str;
+            if (dou >= 1e6)
+            {
+                dou /= 1e6;
+                str = HandleNumber(dou);
+                str += 'M';
+                return str;
+            }
+            else if (dou >= 1e3)
+            {
+                dou /= 1e3;
+                str = HandleNumber(dou);
+                str += 'k';
+                return str;
+            }
+            else if (dou >= 1)
+            {
+                str = HandleNumber(dou);
+                return str;
+            }
+            else if (dou >= 1e-3)
+            {
+                dou *= 1e3;
+                str = HandleNumber(dou);
+                str += 'm';
+                return str;
+            }
+            else if (dou >= 1e-6)
+            {
+                dou *= 1e6;
+                str = HandleNumber(dou);
+                str += 'u';
+                return str;
+            }
+            else if (dou >= 1e-9)
+            {
+                dou *= 1e9;
+                str = HandleNumber(dou);
+                str += 'n';
+                return str;
+            }
+            else if (dou >= 1e-12)
+            {
+                dou *= 1e12;
+                str = HandleNumber(dou);
+                str += 'p';
+                return str;
+            }
+            else
+            {
+                str = HandleScientific(dou);
+                return str;
             }
         }
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -183,7 +307,7 @@ namespace 谐振阻抗计算器
                 {
                     f1 = StrToDou(box.Text);
                     //F1 = dou;
-                    lc1 = Math.Sqrt(1 / (2 * f1 * Math.PI));
+                    lc1 = Math.Pow(1 / (2 * f1 * Math.PI), 2);
                     LC.Text = DouToStr(lc1);
                 }
             }
@@ -191,7 +315,7 @@ namespace 谐振阻抗计算器
 
         private void L_KeyDown(object sender, KeyEventArgs e)
         {
-            if (LC.Text.Length != 0&&L.Text!="")
+            if (LC.Text.Length != 0 && L.Text != "")
             {
                 //取得L1的值
                 l1 = StrToDou(L.Text);
@@ -199,7 +323,8 @@ namespace 谐振阻抗计算器
                 //保存C1的值
                 c1 = result;
                 //C1的值渲染到页面上
-                C.Text = DouToStr(result);
+                //C.Text = DouToStr(result);
+                C.Text = DouToSign(result);
             }
             else
             {
@@ -208,7 +333,7 @@ namespace 谐振阻抗计算器
         }
         private void C_KeyDown(object sender, KeyEventArgs e)
         {
-            if (LC.Text.Length != 0&&C.Text!="")
+            if (LC.Text.Length != 0 && C.Text != "")
             {
                 //double lcValue = LC1;
                 //取得C1的值
@@ -216,7 +341,8 @@ namespace 谐振阻抗计算器
                 //计算L1的值
                 l1 = lc1 / c1;
                 //把L的值渲染到页面上
-                L.Text = DouToStr(l1);
+                //L.Text = DouToStr(l1);
+                L.Text = DouToSign(l1);
             }
             else
             {
@@ -224,7 +350,7 @@ namespace 谐振阻抗计算器
             }
         }
 
-        
+
 
         // F2的事件
         private void TextBox_TextChanged_4(object sender, TextChangedEventArgs e)
@@ -238,7 +364,7 @@ namespace 谐振阻抗计算器
                 //计算xl的值
                 xl = 2 * Math.PI * f2 * l2;
                 //渲染xl的值
-                XL.Text = DouToStr(xl);
+                XL.Text = DouToSign(xl);
             }
             else
             {
@@ -259,7 +385,7 @@ namespace 谐振阻抗计算器
                 //计算XC的值
                 xc = 1 / (2 * Math.PI * f3 * c3);
                 //渲染XC的值
-                XC.Text = DouToStr(xc);
+                XC.Text = DouToSign(xc);
             }
             else
             {
